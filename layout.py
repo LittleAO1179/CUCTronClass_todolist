@@ -15,12 +15,14 @@ def update_text(dict_obj: dict):
 
 def main(page: ft.Page):
     cookies = read_headers()['Cookie']
-    course_name = ft.Ref[ft.Text]()
-    description = ft.Ref[ft.Text]()
-    end_time = ft.Ref[ft.Text]()
+    cookies_in_field = ft.Ref[ft.TextField]()
     total_text = ft.Column()
 
     def search_clicked(e):
+        # TODO：忧化逻辑
+        headers = read_headers()
+        headers['Cookie'] = cookies_in_field.current.value
+        write_headers(headers)
         todo_list = login()
         items = []
         for i in todo_list:
@@ -31,10 +33,12 @@ def main(page: ft.Page):
     page.vertical_alignment = ft.CrossAxisAlignment.CENTER
     page.title = '作业快速查询工具'
     page.add(ft.Row([
-        ft.TextField(width=500, label='Cookies',
-                     autofocus=True, value=cookies),
+        ft.TextField(ref=cookies_in_field, width=500, label='Cookies',
+                     autofocus=True),
         ft.ElevatedButton(text='查询', on_click=search_clicked),
         ft.Column(ref=total_text)
     ], alignment=ft.MainAxisAlignment.CENTER)
     )
+    if cookies != '':
+        cookies_in_field.current.value = str(cookies)
     page.update()

@@ -22,3 +22,8 @@ def login():
         exit(0)
 
     return res
+
+
+def write_headers(header):
+    with open("headers.json", 'w') as write_f:
+        write_f.write(json.dumps(header, indent=4, ensure_ascii=False))
