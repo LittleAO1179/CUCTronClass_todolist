@@ -1,17 +1,20 @@
 import requests
 import json
-header = {
-    'User-Agent':
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36 Edg/112.0.1722.64',
-}
-Cookies = input('请输入Cookies:')
-
-header[Cookies.split(": ")[0]] = Cookies.split(": ")[1]
+header = {}
+with open('headers.json') as user_file:
+    header_str = user_file.read()
+header = json.loads(header_str)
 
 r = requests.get(
     'http://courses.cuc.edu.cn/api/todos?no-intercept=true', headers=header)
 
-res = [i for i in r.json()['todo_list']]
+# Cookies设置错误
+try:
+    res = [i for i in r.json()['todo_list']]
+except:
+    print('发生错误，可能是没有设置好Cookies，请在headers.json中正确设置Cookies')
+    exit(0)
+
 
 for i in res:
     i['course_name'] = str(i['course_name']).split('-')[1]
