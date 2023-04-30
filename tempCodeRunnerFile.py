@@ -1,0 +1,1 @@
+url = 'https://open.weixin.qq.com/connect/qrcode/041EfH2f36sQFa1p'
