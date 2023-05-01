@@ -2,13 +2,12 @@
 
 ## 使用方法
 
-1. 下载源码。
+1. 下载Releases。
 2. 浏览器打开畅课。
 3. 按下F12，选择网络（`Network`），复制页面。
 4. 点击`Index`，找到`Cookies`,右键复制值。
 ![图 1](images/0ac33f593f9911122ec70728cb4471169f44f91ccf35f196a4ff917b88d1eed4.png)  
-5. 打开`headers.json`，粘贴到`Cookies`对应的值。
-6. 在终端运行`main.py`
+5. 打开exe文件，粘贴Cookies并查询
 
 ## 目前实现的功能
 
