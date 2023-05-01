@@ -91,9 +91,8 @@ class TronToDo(UserControl):
     def update(self):
         super().update()
 
-        # 测试用代码
 
-
+# 测试用代码
 def main(page: Page):
     app = TronToDo(page)
     page.add(app)
