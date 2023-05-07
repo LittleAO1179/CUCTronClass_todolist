@@ -142,10 +142,7 @@ class TronToDo(UserControl):
             self.login_error()
             self.update()
             return
-        for i in self.task_inf:
-            task = Task(i)
-            self.tasks.controls.append(task)
-            self.count += 1
+        self.tabs_changed(e=None)
         self.update()
 
     def login_error(self):
@@ -157,8 +154,24 @@ class TronToDo(UserControl):
         self.page.snack_bar.open = True
         self.page.update()
 
-    def tabs_changed(self):
-        pass
+    def tabs_changed(self, e):
+        self.tasks.clean()
+        self.count = 0
+        self.item_count.value = f"共有{self.count}个待办事项"
+        status = self.filter.tabs[self.filter.selected_index].text
+        if status == '按名称排序':
+            sorted_tasks = sorted(self.task_inf, key= lambda x: x['course_name'])
+            for i in sorted_tasks:
+                task = Task(i)
+                self.tasks.controls.append(task)
+                self.count += 1
+        else:
+            sorted_tasks = sorted(self.task_inf, key= lambda x: x['end_time'])
+            for i in sorted_tasks:
+                task = Task(i)
+                self.tasks.controls.append(task)
+                self.count += 1
+        self.update()
 
     def clear_clicked(self, e):
         self.tasks.clean()
