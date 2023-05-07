@@ -15,7 +15,9 @@ from flet import (
     Theme,
     SnackBar,
     TextSpan,
-    colors as ft_colors
+    colors as ft_colors,
+    TextStyle,
+    TextDecoration
 )
 
 # 登录查询程序
@@ -31,17 +33,19 @@ class Task(UserControl):
         self.end_time = task_data['end_time']
         self.type = task_data['type']
         self.title = task_data['title']
+        self.id = task_data['id']
+        self.course_id = task_data['course_id']
 
     def build(self):
-
         return Row(alignment='spaceBetween',
                    controls=[
                        Column(width=300,
-                              controls=[Text(value=self.course_name),],
+                              controls=[Text(spans=[TextSpan(text=self.course_name, on_enter=self.title_entered, on_exit=self.title_unentered,
+                                                             style=TextStyle(), url=f'http://courses.cuc.edu.cn/course/{self.course_id}/content#')], font_family='MSYH'),],
                               ),
                        Column(width=300,
-                              controls=[
-                                  Text(spans=[TextSpan(text=self.title, on_enter=self.title_entered)], font_family='MSYH'),],
+                              controls=[Text(spans=[TextSpan(text=self.title, on_enter=self.title_entered, on_exit=self.title_unentered,
+                                                             style=TextStyle(), url=f'http://courses.cuc.edu.cn/course/{self.course_id}/learning-activity#/{self.id}')], font_family='MSYH'),],
                               ),
                        Column(width=200,
                               controls=[Text(value=self.end_time),],
@@ -50,7 +54,14 @@ class Task(UserControl):
                    )
 
     def title_entered(self, e):
-        pass
+        e.control.style.color = ft_colors.BLUE
+        e.control.style.decoration = TextDecoration.UNDERLINE
+        e.control.update()
+
+    def title_unentered(self, e):
+        e.control.style.color = None
+        e.control.style.decoration = None
+        e.control.update()
 
 
 class TronToDo(UserControl):
