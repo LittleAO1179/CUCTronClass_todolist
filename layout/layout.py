@@ -163,13 +163,11 @@ class TronToDo(UserControl):
         super().update()
 
     def auto_read_cookies(self):
-        if self.cookies == '':
-            with open('headers.json') as user_file:
-                header_str = user_file.read()
-                self.header = json.loads(header_str)
-            if self.header['Cookie'] != '':
-                return self.header['Cookie']
-        return ''
+        with open('headers.json') as user_file:
+            header_str = user_file.read()
+            self.header = json.loads(header_str)
+        if self.header['Cookie'] != '':
+            return self.header['Cookie']
 
     def auto_write_cookies(self):
         if self.cookie_input.value != '':

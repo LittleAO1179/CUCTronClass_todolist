@@ -48,6 +48,7 @@ class Task(UserControl):
                        Column(width=200,
                               controls=[Text(value=self.end_time),],
                               ),
+                              
                    ],
                    )
 

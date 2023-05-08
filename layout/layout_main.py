@@ -22,6 +22,7 @@ from flet import (
     Container,
     ResponsiveRow,
     alignment,
+    IconButton
 )
 from flet_core.control import Control, OptionalNumber
 from flet_core.ref import Ref
@@ -29,26 +30,45 @@ from flet_core.types import AnimationValue, ClipBehavior, OffsetValue, Responsiv
 from process.login import LoginTronClass
 from layout.layout_sidebar import SideBar
 from layout.layout import TronToDo
-
+from layout.settings import SettingsLayout
 
 class MainLayout(UserControl):
     def __init__(self, page : Page):
         super().__init__()
         self.page = page
-
-    def build(self):
-        self.page.on_resize = self.on_resize
+        self.sidebar = SideBar(self.page)
         self.layout_todo = TronToDo(self.page)
-        self.layout_sidebar = Container(SideBar(self.page),bgcolor=ft_colors.BLACK12)
+        self.settings = SettingsLayout()
+        self.page.on_resize = self.on_resize
+        self.layout_sidebar = Container(self.sidebar,bgcolor=ft_colors.BLACK12)
         self.main_content = Container(content=self.layout_todo,
-                                      width=self.page.width,
+                                    width=self.page.width,
                                     alignment=alignment.top_center,
                                     height=self.page.height-50)
-        res = Row(controls=[self.layout_sidebar,self.main_content,])
-        return res
+        self.res = Row(controls=[self.layout_sidebar,self.main_content,])
+
+
+    def build(self):
+        self.sidebar.settings.current.on_click = self.settings_clicked
+        self.sidebar.todo.current.on_click = self.todo_clicked
+        self.sidebar.event.current.on_click = self.event_clicked
+        return self.res
     
     def on_resize(self, e):
         self.main_content.width = self.page.width
         self.main_content.alignment = alignment.top_center
         self.main_content.height = self.page.height - 50
+        self.main_content.update()
+
+    def settings_clicked(self ,e):
+        self.main_content.content = self.settings
+        self.main_content.update()
+        self.page.update()
+
+    def todo_clicked(self, e):
+        self.main_content.content = self.layout_todo
+        self.main_content.update()
+
+    def event_clicked(self, e):
+        self.main_content.content = Text("此页面建设中，敬请期待。")
         self.main_content.update()

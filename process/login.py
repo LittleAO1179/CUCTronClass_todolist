@@ -37,3 +37,13 @@ class LoginTronClass:
     
     def selenium_login(self):
         webdriver.Edge()
+
+class CookiesProcess():
+    def __init__(self):
+        pass
+
+    def read_cookie():
+        with open('headers.json') as user_file:
+            header_str = user_file.read()
+            header = json.loads(header_str)
+        return header['Cookie']
