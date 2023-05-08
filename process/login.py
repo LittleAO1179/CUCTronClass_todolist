@@ -1,7 +1,6 @@
 import requests
 import json
 from selenium import webdriver
-
 class LoginTronClass:
     '''
     处理畅课登录
@@ -14,8 +13,11 @@ class LoginTronClass:
         self.url = "http://courses.cuc.edu.cn/api/todos?no-intercept=true"
 
     def login_attempt(self):
-        '''首次尝试用Cookie登录，若登陆成功，则会返回待办的list，登陆失败则返回`-1`'''
-        data = requests.get(url=self.url, headers=self.header)
+        '''首次尝试用Cookie登录，若登陆成功，则会返回待办的list，登陆失败则返回`-1`,连接失败返回`-2`'''
+        try: 
+            data = requests.get(url=self.url, headers=self.header)
+        except:
+            return -2
         try:
             res = [i for i in data.json()['todo_list']]
         except:
@@ -35,31 +37,3 @@ class LoginTronClass:
     
     def selenium_login(self):
         webdriver.Edge()
-
-
-
-def read_headers():
-    with open('headers.json') as user_file:
-        header_str = user_file.read()
-        header = json.loads(header_str)
-    return header
-
-
-def login():
-    header = read_headers()
-    r = requests.get(
-        'http://courses.cuc.edu.cn/api/todos?no-intercept=true', headers=header)
-
-    # Cookies设置错误
-    try:
-        res = [i for i in r.json()['todo_list']]
-    except:
-        print('发生错误，可能是没有设置好Cookies，请在headers.json中正确设置Cookies')
-        exit(0)
-
-    return res
-
-
-def write_headers(header):
-    with open("headers.json", 'w') as write_f:
-        write_f.write(json.dumps(header, indent=4, ensure_ascii=False))

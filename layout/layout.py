@@ -1,5 +1,4 @@
 import json
-from login import LoginTronClass
 from flet import (
     Page,
     app,
@@ -17,53 +16,17 @@ from flet import (
     TextSpan,
     colors as ft_colors,
     TextStyle,
-    TextDecoration
+    TextDecoration,
+    Divider,
 )
+from layout.task import Task
+import sys
+sys.path.append("..")
+from process.login import LoginTronClass
+
+
 
 # 登录查询程序
-
-
-class Task(UserControl):
-    def __init__(self, task_data: dict):
-        '''
-        `task_data`: 传入课程的字典
-        '''
-        super().__init__()
-        self.course_name = task_data['course_name']
-        self.end_time = task_data['end_time']
-        self.type = task_data['type']
-        self.title = task_data['title']
-        self.id = task_data['id']
-        self.course_id = task_data['course_id']
-
-    def build(self):
-        return Row(alignment='spaceBetween',
-                   controls=[
-                       Column(width=300,
-                              controls=[Text(spans=[TextSpan(text=self.course_name, on_enter=self.title_entered, on_exit=self.title_unentered,
-                                                             style=TextStyle(), url=f'http://courses.cuc.edu.cn/course/{self.course_id}/content#')], font_family='MSYH'),],
-                              ),
-                       Column(width=300,
-                              controls=[Text(spans=[TextSpan(text=self.title, on_enter=self.title_entered, on_exit=self.title_unentered,
-                                                             style=TextStyle(), url=f'http://courses.cuc.edu.cn/course/{self.course_id}/learning-activity#/{self.id}')], font_family='MSYH'),],
-                              ),
-                       Column(width=200,
-                              controls=[Text(value=self.end_time),],
-                              ),
-                   ],
-                   )
-
-    def title_entered(self, e):
-        e.control.style.color = ft_colors.BLUE
-        e.control.style.decoration = TextDecoration.UNDERLINE
-        e.control.update()
-
-    def title_unentered(self, e):
-        e.control.style.color = None
-        e.control.style.decoration = None
-        e.control.update()
-
-
 class TronToDo(UserControl):
     def __init__(self, page: Page):
         self.count = 0
@@ -122,7 +85,9 @@ class TronToDo(UserControl):
                                        controls=[Text(value='截止时间'),],
                                        ),
                             ],
+                            spacing=2
                             ),
+                        Divider(height=1),
                         self.tasks,
                         Row(
                             alignment="spaceBetween",
@@ -150,18 +115,20 @@ class TronToDo(UserControl):
         login_func = LoginTronClass(self.header)
         self.task_inf = login_func.login_attempt()
         if self.task_inf == -1:
-            self.login_error()
+            self.send_error("发生错误，可能是没有设置好Cookies，请正确设置Cookies")
+            self.update()
+            return
+        elif self.task_inf == -2:
+            self.send_error("连接失败，请您检查网络连接并稍后再试。")
             self.update()
             return
         self.tabs_changed(e=None)
         self.update()
-
-    def login_error(self):
-        self.send_error("发生错误，可能是没有设置好Cookies，请正确设置Cookies")
+        
 
     def send_error(self, message: str):
         self.page.snack_bar = SnackBar(content=Text(
-            value=message))
+            value=message),bgcolor= 'red')
         self.page.snack_bar.open = True
         self.page.update()
 
@@ -215,21 +182,3 @@ class TronToDo(UserControl):
                 user_file.write(json.dumps(
                     header, indent=4, ensure_ascii=False))
         self.auto_read_cookies()
-# 测试用代码
-
-
-def main(page: Page):
-    app = TronToDo(page)
-    page.add(app)
-    page.title = 'TronClass代办查询'
-    page.horizontal_alignment = "CENTER"
-    page.fonts = {
-        "MSYH": "fonts\MSYH.TTC"
-    }
-    page.theme = Theme(font_family='MSYH')
-    page.theme_mode = 'light'
-    page.scroll = "adaptive"
-    page.update()
-
-
-app(target=main)
