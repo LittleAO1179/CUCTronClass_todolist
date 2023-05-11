@@ -38,7 +38,7 @@ class MainLayout(UserControl):
         self.page = page
         self.sidebar = SideBar(self.page)
         self.layout_todo = TronToDo(self.page)
-        self.settings = SettingsLayout()
+        self.settings = SettingsLayout(self.page)
         self.page.on_resize = self.on_resize
         self.layout_sidebar = Container(self.sidebar,bgcolor=ft_colors.BLACK12)
         self.main_content = Container(content=self.layout_todo,

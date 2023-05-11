@@ -18,6 +18,10 @@ from flet import (
     TextStyle,
     TextDecoration,
     Divider,
+    ProgressRing,
+    Ref,
+    Container,
+    alignment
 )
 from layout.task import Task
 import sys
@@ -34,6 +38,7 @@ class TronToDo(UserControl):
         self.task_inf = ''
         self.page = page
         super().__init__()
+        self.loading = Ref[Container]()
 
     def build(self):
         self.cookies = self.auto_read_cookies()
@@ -56,7 +61,7 @@ class TronToDo(UserControl):
             width=800,
             # TODO: 改字体
             controls=[
-                Row([Text(value='畅课代办查询', style="headlineMedium", font_family='MSYH'), ],
+                Row([Text(value='畅课待办查询', style="headlineMedium", font_family='MSYH'), ],
                     alignment='center', height=90,),
                 Row(
                     controls=[
@@ -88,6 +93,7 @@ class TronToDo(UserControl):
                             spacing=2
                             ),
                         Divider(height=1),
+                        Container(ref=self.loading,content=ProgressRing(),alignment=alignment.top_center,visible=False,),
                         self.tasks,
                         Row(
                             alignment="spaceBetween",
@@ -106,6 +112,8 @@ class TronToDo(UserControl):
 
     # 按下搜索按键
     def search_clicked(self, e):
+        self.loading.current.visible = True
+        self.loading.current.update()
         self.tasks.clean()
         self.count = 0
         if self.header['Cookie'] != self.cookie_input.value:
@@ -123,6 +131,8 @@ class TronToDo(UserControl):
             self.update()
             return
         self.tabs_changed(e=None)
+        self.loading.current.visible = False
+        self.loading.current.update()
         self.update()
         
 
